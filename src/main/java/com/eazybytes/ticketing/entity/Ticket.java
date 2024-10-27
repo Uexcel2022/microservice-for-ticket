@@ -8,17 +8,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
+
 @Getter @Setter
 @Entity
 public class Ticket extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String  tickId;
-    private String  routId;
-    private String  amount;
+    private String ticketId;
+    private Long  routId;
+    private String phoneNumber;
+    private double  amount;
     private String  status;
     private LocalDate purchasedDate;
-    private LocalTime usedDate;
+    private Date usedDate;
     private String  busId;
 }

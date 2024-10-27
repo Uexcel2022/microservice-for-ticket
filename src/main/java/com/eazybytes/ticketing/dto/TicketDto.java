@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Setter @Getter
 public class TicketDto {
     private String Name;
-    private String  tickId;
+    private String ticketId;
     private String  origin;
     private String  destination;
     private double  amount;

@@ -10,3 +10,14 @@ spring:
   h2:
     console:
       enabled: true
+  jpa:
+    defer-datasource-initialization: true
+
+server:
+  port: 8085
+
+wallet:
+  bal: 2000.00
+
+
+
