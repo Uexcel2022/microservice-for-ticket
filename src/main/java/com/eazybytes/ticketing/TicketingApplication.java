@@ -1,13 +1,13 @@
 package com.eazybytes.ticketing;
 
-import com.eazybytes.ticketing.dto.BustRoute;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAwareImpl")
+@EnableFeignClients
 public class TicketingApplication {
 
 	public static void main(String[] args) {

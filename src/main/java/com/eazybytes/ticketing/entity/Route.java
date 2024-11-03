@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Route extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long routeId;
+    private long routeId;
     private String origin;
     private String destination;
     private double price;

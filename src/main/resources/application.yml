@@ -16,8 +16,46 @@ spring:
 server:
   port: 8085
 
-wallet:
-  bal: 2000.00
+eureka:
+  instance:
+    hostname: "localhost"
+  fetch-registry: true
+  register-with-eureka: true
+  client:
+    service-url:
+      defaultZone: "http://localhost:8070/eureka/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+
+  health:
+    liveness-state:
+      enabled: true
+    readiness-state: true
+
+  info:
+    env:
+      enabled: true
+
+    endpoint:
+      shutdown:
+        enabled: true
+
+endpoints:
+  shutdown:
+    enable: true
 
 
-
+info:
+  app:
+    name: ticketing
+    description: "local transport system"
+    version: "0.0.1"

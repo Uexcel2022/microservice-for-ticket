@@ -18,7 +18,7 @@ public class CheckinController {
     private final CheckinServiceImpl checkinService;
 
     @PostMapping("/checkin")
-    public ResponseEntity<ResponseDto> checkIn(@RequestBody CheckinDto checkinDto){
+    public ResponseEntity<ResponseDto> checkInByTicketNumber(@RequestBody CheckinDto checkinDto){
         return ResponseEntity.ok().body(checkinService.checkinValidation(checkinDto));
     }
 

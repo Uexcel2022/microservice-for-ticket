@@ -1,25 +1,31 @@
 package com.eazybytes.ticketing.service.impl;
 
-import com.eazybytes.ticketing.dto.BustRoute;
+import com.eazybytes.ticketing.entity.BusRoute;
 import com.eazybytes.ticketing.dto.CheckinDto;
 import com.eazybytes.ticketing.dto.ResponseDto;
 import com.eazybytes.ticketing.entity.Ticket;
 import com.eazybytes.ticketing.exception.InvalidInputException;
 import com.eazybytes.ticketing.exception.ResourceNoFoundException;
+import com.eazybytes.ticketing.repositorty.BusRouteRepository;
 import com.eazybytes.ticketing.repositorty.TicketRepository;
 import com.eazybytes.ticketing.service.ICheckinService;
-import org.springframework.stereotype.Component;
+import com.eazybytes.ticketing.service.ITicketService;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
-@Component
+@Service
 public class CheckinServiceImpl implements ICheckinService {
     private final TicketRepository ticketRepository;
+    private final BusRouteRepository busRouteRepository;
+    private final ITicketService ticketService;
 
-    public CheckinServiceImpl(TicketRepository ticketRepository) {
+    public CheckinServiceImpl(TicketRepository ticketRepository, BusRouteRepository
+            busRouteRepository, ITicketService ticketService) {
 
         this.ticketRepository = ticketRepository;
+        this.busRouteRepository = busRouteRepository;
+        this.ticketService = ticketService;
     }
     
     /**
@@ -33,37 +39,26 @@ public class CheckinServiceImpl implements ICheckinService {
                         "Ticket","ticketId",checkinDto.getTicketId()));
 
 
-        if(!ticketNotExpired(ticket.getPurchasedDate())){
-            ticket.setStatus("expired");
-            ticketRepository.save(ticket);
-            throw  new InvalidInputException("Ticket has expired.");
-        }
+        ticketService.checkTicketStatus(ticket,ticketRepository);
 
-        if(ticket.getStatus().equalsIgnoreCase("used")){
-            throw  new InvalidInputException(
-                    "The ticket was used on "+formatDate(ticket.getUsedDate()));
-        }
+        /**
+         * Get bus and check if the bus is enlisted on the route on the ticket
+         * */
 
-        if(ticket.getStatus().equalsIgnoreCase("refunded")){
-            throw  new InvalidInputException(
-                    "The ticket was refunded on "+formatDate(ticket.getUpdatedAt()));
-        }
-
-
-        List<BustRoute> isValidRoute =   BustRoute.getARoute().stream().filter(
-                busRout->busRout.getBusId().equals(checkinDto.getBusId())
-                        && busRout.getRouteId().equals(ticket.getRoutId())
+        List<BusRoute> isValidRoute =   busRouteRepository
+                .findBusRouteByBusId(checkinDto.getBusId()).stream()
+                .filter(busRout->busRout.getRouteId().equals(ticket.getRoutId())
         ).toList();
 
         if(isValidRoute.isEmpty()){
             throw new InvalidInputException(
                     "The ticketId "+ checkinDto.getTicketId()+" is not for this route");
         }
-        ticket.setStatus("used");
+
+        ticket.setStatus(ITicketService.USE);
         ticket.setBusId(checkinDto.getBusId());
         ticket.setUsedDate(new Date());
         ticketRepository.save(ticket);
-
         return new ResponseDto(200,"Checkin successful. Thank you for using our services.");
     }
 
