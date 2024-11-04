@@ -1,16 +1,14 @@
 package com.eazybytes.ticketing.service.impl;
 
 import com.eazybytes.ticketing.constants.ITicketConstants;
-import com.eazybytes.ticketing.dto.BusResponseDto;
-import com.eazybytes.ticketing.dto.BusRouteException;
-import com.eazybytes.ticketing.dto.ResponseDto;
-import com.eazybytes.ticketing.dto.RouteResponseDto;
+import com.eazybytes.ticketing.dto.*;
 import com.eazybytes.ticketing.entity.BusRoute;
 import com.eazybytes.ticketing.entity.Route;
 import com.eazybytes.ticketing.exception.ResourceNoFoundException;
 import com.eazybytes.ticketing.repositorty.BusRouteRepository;
 import com.eazybytes.ticketing.repositorty.RouteRepository;
 import com.eazybytes.ticketing.service.IBusRouteService;
+import com.eazybytes.ticketing.service.impl.client.BusFeignClient;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,7 @@ import java.util.List;
 public class IBusRouteServiceImpl implements IBusRouteService {
     private final BusRouteRepository busRouteRepository;
     private final RouteRepository routeRepository;
+    private  final BusFeignClient busFeignClient;
     /**
      * @param busOrRouteList - list of [buses] (routes) to be added on [routes] (buses)
      * @return response
@@ -29,6 +28,14 @@ public class IBusRouteServiceImpl implements IBusRouteService {
     @Override
     @Transactional
     public ResponseDto createBusRoutes(List<BusRoute> busOrRouteList) {
+
+        for (BusRoute busRoute : busOrRouteList) {
+            BusDto busDto = busFeignClient.fetchBus(busRoute.getBusId()).getBody();
+            if (busDto == null) {
+                throw new  ResourceNoFoundException("Bus","busId",busDto.getBusId());
+            }
+        }
+
         List<BusRoute> existSBusRoute = new ArrayList<>();
         for (BusRoute busRoute : busOrRouteList) {
          boolean exists =   busRouteRepository

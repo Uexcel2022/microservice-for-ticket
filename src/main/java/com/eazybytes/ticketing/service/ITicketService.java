@@ -16,7 +16,7 @@ public interface ITicketService {
      String REFUND = "refunded", USE = "used", EXPIRE = "expired", VALID = "valid";
 
     /**
-     * @param BuyTicketDto  - holding customer and route information
+     * @param buyTicketDto  - holding customer and route information
      * @return - Returns ticked info
      */
 

@@ -44,9 +44,12 @@ public class CheckinServiceImpl implements ICheckinService {
         /**
          * Get bus and check if the bus is enlisted on the route on the ticket
          * */
+        List<BusRoute> buses = busRouteRepository.findBusRouteByBusId(checkinDto.getBusId());
 
-        List<BusRoute> isValidRoute =   busRouteRepository
-                .findBusRouteByBusId(checkinDto.getBusId()).stream()
+                if(buses.isEmpty()){
+                    throw new ResourceNoFoundException("BusRoute","busId",checkinDto.getBusId());
+                }
+        List<BusRoute> isValidRoute = buses.stream()
                 .filter(busRout->busRout.getRouteId().equals(ticket.getRoutId())
         ).toList();
 

@@ -22,7 +22,7 @@ public class BusRouteController {
     private final IBusRouteService busRouteService;
     @PostMapping("/create-bus-route")
     public ResponseEntity<ResponseDto> manyBusToOneRoute(@RequestBody
-                                                         List<BusRoute> busRoute ){
+                                                         List<BusRoute> busRoute){
         ResponseDto responseDto  = busRouteService.createBusRoutes(busRoute);
         logger.debug("BusRouteController.manyBusToOneRoute: {}", responseDto);
         return ResponseEntity.status(201).body(responseDto);
